@@ -1,4 +1,3 @@
-# IntelliJ IDEA / Android Studio
 .idea/
 *.iml
 *.iws
@@ -6,13 +5,11 @@
 out/
 .navigation/
 
-# Gradle
 .gradle/
 build/
 */build/
 captured_screenshots/
 
-# Android
 local.properties
 .externalNativeBuild
 .cxx
@@ -21,19 +18,13 @@ local.properties
 *.ap_
 *.dex
 
-# Kotlin Multiplatform
 .kotlin/
 composeApp/build/
 androidApp/build/
 designsystem/build/
 
-# Firebase & Google Services (Opcional: Si quieres mantener tus llaves privadas fuera de GitHub)
-# google-services.json
-
-# OS Specific
 .DS_Store
 Thumbs.db
 *.swp
 
-# Logs
 *.log
