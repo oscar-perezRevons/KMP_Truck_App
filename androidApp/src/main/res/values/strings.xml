@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Loco xml export: Android strings
+ Project: patriot
+ Locale: en-BO, English (Bolivia)
+ Exported by: Oscar Revons
+ Exported at: Wed, 22 Apr 2026 18:15:55 -0400
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="home_title">Welcome</string>
+    <string name="username">Username</string>
+    <string name="good_bye">Good Bye</string>
+</resources>

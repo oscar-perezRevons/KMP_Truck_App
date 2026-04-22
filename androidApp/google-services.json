@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "625002602437",
+    "project_id": "truckapp-60cb6",
+    "storage_bucket": "truckapp-60cb6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625002602437:android:cbf8156ccaab906ffa75ac",
+        "android_client_info": {
+          "package_name": "truck.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6HsceWa2qu-HAPw9BYLbJDem5cC1e4xA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
