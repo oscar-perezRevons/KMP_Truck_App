@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
+    alias(libs.plugins.mockative)
 }
 
 kotlin {
@@ -59,6 +60,9 @@ kotlin {
 
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
+
+            implementation(libs.turbine)
+            implementation(libs.mockative)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -73,6 +77,11 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.turbine)
+        }
+        androidInstrumentedTest.dependencies {
+            implementation(libs.ui.test.junit4)
         }
     }
 }

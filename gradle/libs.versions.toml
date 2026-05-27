@@ -1,8 +1,8 @@
 [versions]
-agp = "9.1.1"
-android-compileSdk = "37"
+agp = "8.7.3"
+android-compileSdk = "35"
 android-minSdk = "24"
-android-targetSdk = "37"
+android-targetSdk = "35"
 androidx-activity = "1.9.3"
 androidx-appcompat = "1.7.0"
 androidx-core = "1.13.1"
@@ -11,7 +11,7 @@ androidx-lifecycle = "2.8.3"
 androidx-testExt = "1.2.1"
 composeMultiplatform = "1.7.3"
 junit = "4.13.2"
-kotlin = "2.2.10"
+kotlin = "2.1.0"
 material3 = "1.7.3"
 koin = "4.0.2"
 coil= "3.0.4"
@@ -21,7 +21,7 @@ navigationCompose = "2.9.2"
 ktor = "2.3.12"
 room = "2.7.2"
 sqlite = "2.5.0-alpha01"
-ksp = "2.3.2"
+ksp = "2.1.0-1.0.29"
 googleMapsCompose = "6.1.0"
 playServicesMaps = "19.0.0"
 playServicesLocation = "21.3.0"
@@ -34,9 +34,11 @@ firebaseDatabase = "21.0.0"
 firebaseBom = "33.5.1"
 firebaseMessaging = "24.0.3"
 lokalise = "2.1.1"
-kotlinStdlib = "2.2.10"
+kotlinStdlib = "2.1.0"
 runner = "1.5.2"
 core = "1.5.0"
+turbine = "1.1.0"
+mockative = "3.2.3"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -95,6 +97,10 @@ lokalise-sdk = { module = "com.lokalise.android:sdk", version.ref = "lokalise" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+ui-test-junit4 = { module = "org.jetbrains.compose.ui:ui-test-junit4", version.ref = "composeMultiplatform" }
+mockative = { module = "io.mockative:mockative", version.ref = "mockative" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -109,3 +115,4 @@ google-gms-google-services = { id = "com.google.gms.google-services", version.re
 android-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
+mockative = { id = "io.mockative", version.ref = "mockative" }

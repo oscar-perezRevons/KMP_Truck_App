@@ -10,10 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import truck.project.data.local.TruckEntity
 
-// Nota: Necesitamos obtener el idioma. Como estamos en Common, 
-// lo ideal es pasar el idioma al sync o tener un LanguageProvider.
-// Por ahora usaremos "en" por defecto o lo que detectemos.
-
 class TruckRepositoryImpl(
     private val truckDao: TruckDao,
     private val remoteDatabase: RemoteDatabase,
@@ -27,8 +23,6 @@ class TruckRepositoryImpl(
     }
 
     override suspend fun saveTruck(truck: Truck) {
-        // Al guardar localmente, intentamos traducir de inmediato
-        // Asumimos 'en' como destino común o podrías inyectar el idioma actual
         val entity = truck.toEntity()
         val generatedId = truckDao.insert(entity)
         remoteDatabase.saveTruck(entity.copy(id = generatedId))
@@ -58,12 +52,11 @@ class TruckRepositoryImpl(
                 
                 val finalEntity = remoteEntity.copy(
                     statusTranslated = translated,
-                    needsTranslation = translated == null // Si falla, que lo intente el Worker luego
+                    needsTranslation = translated == null
                 )
                 
                 if (localEntity == null) truckDao.insert(finalEntity) else truckDao.update(finalEntity)
             } else {
-                // No cambió el status: Mantener lo que ya tenemos
                 truckDao.update(
                     remoteEntity.copy(
                         statusTranslated = localEntity.statusTranslated,
@@ -74,10 +67,9 @@ class TruckRepositoryImpl(
         }
     }
 
-    // Helper para mapear (asegúrate de que toEntity existe en tus mappers o úsalo aquí)
     private fun Truck.toEntity() = TruckEntity(
         id = id,
-        licensePlate = licensePlate,
+        licensePlate = licensePlate.value,
         model = model,
         status = status,
         statusTranslated = statusTranslated,

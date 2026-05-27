@@ -122,7 +122,7 @@ fun TruckScreen(
                             ListItem(
                                 colors = ListItemDefaults.colors(containerColor = DsTheme.colors.background),
                                 headlineContent = {
-                                    Text(truck.licensePlate, style = DsTheme.typography.body, color = DsTheme.colors.textPrimary)
+                                    Text(truck.licensePlate.value, style = DsTheme.typography.body, color = DsTheme.colors.textPrimary)
                                 },
                                 supportingContent = {
                                     val displayStatus = if (truck.statusTranslated != null) {
