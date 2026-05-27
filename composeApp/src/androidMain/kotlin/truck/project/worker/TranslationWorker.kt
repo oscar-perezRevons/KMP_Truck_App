@@ -6,8 +6,8 @@ import androidx.work.WorkerParameters
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import android.util.Log
-import truck.project.data.local.TruckDao
-import truck.project.data.remote.TranslationService
+import truck.project.features.fleet.data.local.TruckDao
+import truck.project.core.data.remote.TranslationService
 import java.util.Locale
 
 class TranslationWorker(
@@ -29,23 +29,17 @@ class TranslationWorker(
 
         Log.d("TranslationWorker", "Encontrados ${trucksToTranslate.size} camiones para traducir.")
         val currentLanguage = Locale.getDefault().language
-        Log.d("TranslationWorker", "Idioma actual del dispositivo: $currentLanguage")
 
         trucksToTranslate.forEach { truck ->
-            Log.d("TranslationWorker", "Traduciendo estado: ${truck.status}")
             val result = translationService.translate(truck.status, currentLanguage)
             
             if (result != null && !result.startsWith("ERROR_LOG_INTERNAL:")) {
-                Log.d("TranslationWorker", "Traducción exitosa: $result")
                 truckDao.update(
                     truck.copy(
                         statusTranslated = result,
                         needsTranslation = false
                     )
                 )
-            } else {
-                val errorMessage = result?.removePrefix("ERROR_LOG_INTERNAL:") ?: "null"
-                Log.e("TranslationWorker", "Error de API Loco: $errorMessage")
             }
         }
 

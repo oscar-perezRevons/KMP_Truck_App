@@ -9,40 +9,38 @@ androidx-core = "1.13.1"
 androidx-espresso = "3.6.1"
 androidx-lifecycle = "2.8.3"
 androidx-testExt = "1.2.1"
-composeMultiplatform = "1.7.3"
+composeMultiplatform = "1.7.0"
 junit = "4.13.2"
-kotlin = "2.1.0"
-material3 = "1.7.3"
-koin = "4.0.2"
+kotlin = "2.0.21"
+material3 = "1.7.0"
+koin = "4.0.0"
 coil= "3.0.4"
 kotlinxSerializationJson = "1.7.3"
 kotlinx-datetime = "0.6.1"
 navigationCompose = "2.9.2"
 ktor = "2.3.12"
-room = "2.7.2"
+room = "2.7.0-alpha11"
 sqlite = "2.5.0-alpha01"
-ksp = "2.1.0-1.0.29"
+ksp = "2.0.21-1.0.28"
 googleMapsCompose = "6.1.0"
 playServicesMaps = "19.0.0"
 playServicesLocation = "21.3.0"
 accompanistPermissions = "0.36.0"
 kotlinxCoroutines = "1.8.1"
 googlePlaces = "4.0.0"
-googleGmsGoogleServices = "4.4.2"
+googleGmsGoogleServices = "4.4.4"
 androidx-work = "2.11.2"
-firebaseDatabase = "21.0.0"
+firebaseDatabase = "22.0.1"
 firebaseBom = "33.5.1"
 firebaseMessaging = "24.0.3"
 lokalise = "2.1.1"
-kotlinStdlib = "2.1.0"
 runner = "1.5.2"
 core = "1.5.0"
 turbine = "1.1.0"
-mockative = "3.2.3"
+mockative = "2.0.1"
 
 [libraries]
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 junit = { module = "junit:junit", version.ref = "junit" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-testExt-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-testExt" }
@@ -85,7 +83,7 @@ play-services-maps = { module = "com.google.android.gms:play-services-maps", ver
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutines" }
-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "composeMultiplatform" }
+material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "composeMultiplatform" }
 google-places = { module = "com.google.android.libraries.places:places", version.ref = "googlePlaces" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database" }
@@ -94,7 +92,6 @@ firebase-config = { group = "com.google.firebase", name = "firebase-config" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 androidx-work-runtime = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidx-work" }
 lokalise-sdk = { module = "com.lokalise.android:sdk", version.ref = "lokalise" }
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }

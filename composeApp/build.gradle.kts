@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
-    alias(libs.plugins.mockative)
 }
 
 kotlin {
@@ -32,7 +31,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":designsystem"))
+            implementation(projects.designsystem)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
@@ -49,6 +48,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.navigation.compose)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.material.icons.extended)
 
             //ktor
             implementation(libs.ktor.client.core)
@@ -62,7 +62,6 @@ kotlin {
             implementation(libs.androidx.sqlite.bundled)
 
             implementation(libs.turbine)
-            implementation(libs.mockative)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

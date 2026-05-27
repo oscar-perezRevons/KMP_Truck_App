@@ -3,7 +3,8 @@ package truck.project
 import androidx.compose.runtime.*
 import androidx.navigation.compose.rememberNavController
 import org.koin.compose.koinInject
-import truck.project.data.remote.FirebaseConfig
+import truck.project.core.data.remote.FirebaseConfig
+import truck.project.designsystem.theme.DsTheme
 import truck.project.navigation.NavGraph
 
 @Composable
@@ -21,9 +22,11 @@ fun App() {
         }
     }
 
-    NavGraph(
-        navController = navController,
-        isMaintenanceMode = isMaintenanceMode,
-        onSkipMaintenance = { isMaintenanceMode = false }
-    )
+    DsTheme {
+        NavGraph(
+            navController = navController,
+            isMaintenanceMode = isMaintenanceMode,
+            onSkipMaintenance = { isMaintenanceMode = false }
+        )
+    }
 }

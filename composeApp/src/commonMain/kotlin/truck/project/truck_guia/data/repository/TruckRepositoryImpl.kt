@@ -1,6 +1,6 @@
 package truck.project.truck_guia.data.repository
 
-import truck.project.data.local.TruckDao
+import truck.project.features.fleet.data.local.TruckDao
 import truck.project.data.remote.RemoteDatabase
 import truck.project.data.remote.TranslationService
 import truck.project.truck_guia.data.mapper.toDomain
@@ -8,7 +8,7 @@ import truck.project.truck_guia.domain.model.Truck
 import truck.project.truck_guia.domain.repository.TruckRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import truck.project.data.local.TruckEntity
+import truck.project.features.fleet.data.local.TruckEntity
 
 class TruckRepositoryImpl(
     private val truckDao: TruckDao,
@@ -24,8 +24,8 @@ class TruckRepositoryImpl(
 
     override suspend fun saveTruck(truck: Truck) {
         val entity = truck.toEntity()
-        val generatedId = truckDao.insert(entity)
-        remoteDatabase.saveTruck(entity.copy(id = generatedId))
+        truckDao.insertTruck(entity)
+        remoteDatabase.saveTruck(entity)
     }
 
     override suspend fun updateTruck(truck: Truck) {
@@ -37,7 +37,7 @@ class TruckRepositoryImpl(
     override suspend fun deleteTruck(truck: Truck) {
         val entity = truck.toEntity()
         truckDao.delete(entity)
-        remoteDatabase.deleteTruck(entity.id.toString())
+        remoteDatabase.deleteTruck(entity.id)
     }
 
     override suspend fun sync() {
@@ -55,7 +55,7 @@ class TruckRepositoryImpl(
                     needsTranslation = translated == null
                 )
                 
-                if (localEntity == null) truckDao.insert(finalEntity) else truckDao.update(finalEntity)
+                if (localEntity == null) truckDao.insertTruck(finalEntity) else truckDao.update(finalEntity)
             } else {
                 truckDao.update(
                     remoteEntity.copy(
@@ -69,7 +69,7 @@ class TruckRepositoryImpl(
 
     private fun Truck.toEntity() = TruckEntity(
         id = id,
-        licensePlate = licensePlate.value,
+        plateNumber = licensePlate.value,
         model = model,
         status = status,
         statusTranslated = statusTranslated,

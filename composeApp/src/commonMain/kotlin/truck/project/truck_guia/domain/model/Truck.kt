@@ -5,7 +5,7 @@ import truck.project.truck_guia.domain.vo.Placa
 
 @Serializable
 data class Truck(
-    val id: Long = 0,
+    val id: String = "",
     val licensePlate: Placa,
     val model: String = "",
     val status: String = "",
