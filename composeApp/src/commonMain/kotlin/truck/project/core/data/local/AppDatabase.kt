@@ -23,7 +23,7 @@ import truck.project.features.admin.data.local.AdminEntity
         ExpenseEntity::class,
         AdminEntity::class
     ],
-    version = 15
+    version = 16
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {

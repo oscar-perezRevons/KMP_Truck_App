@@ -18,13 +18,21 @@ fun VolvoTextField(
     label: String,
     modifier: Modifier = Modifier,
     placeholder: String? = null,
+    readOnly: Boolean = false,
+    enabled: Boolean = true,
+    keyboardOptions: androidx.compose.foundation.text.KeyboardOptions = androidx.compose.foundation.text.KeyboardOptions.Default,
     trailingIcon: @Composable (() -> Unit)? = null,
-    visualTransformation: androidx.compose.ui.text.input.VisualTransformation = androidx.compose.ui.text.input.VisualTransformation.None
+    visualTransformation: androidx.compose.ui.text.input.VisualTransformation = androidx.compose.ui.text.input.VisualTransformation.None,
+    interactionSource: androidx.compose.foundation.interaction.MutableInteractionSource = androidx.compose.runtime.remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier.fillMaxWidth(),
+        readOnly = readOnly,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        keyboardOptions = keyboardOptions,
         label = { Text(label, style = DsTheme.typography.labelSmall, letterSpacing = 1.sp) },
         placeholder = placeholder?.let { { Text(it, style = DsTheme.typography.bodyMedium, color = DsTheme.colors.textSecondary.copy(alpha = 0.5f)) } },
         trailingIcon = trailingIcon,
@@ -36,11 +44,14 @@ fun VolvoTextField(
             unfocusedBorderColor = DsTheme.colors.divider,
             focusedContainerColor = DsTheme.colors.surface,
             unfocusedContainerColor = DsTheme.colors.surfaceVariant.copy(alpha = 0.5f),
-            cursorColor = DsTheme.colors.primary,
+            disabledContainerColor = DsTheme.colors.surfaceVariant.copy(alpha = 0.3f),
+            cursorColor = if (readOnly) Color.Transparent else DsTheme.colors.primary,
             focusedTextColor = DsTheme.colors.textPrimary,
             unfocusedTextColor = DsTheme.colors.textPrimary,
+            disabledTextColor = DsTheme.colors.textPrimary,
             focusedLabelColor = DsTheme.colors.primary,
             unfocusedLabelColor = DsTheme.colors.textSecondary,
+            disabledLabelColor = DsTheme.colors.textSecondary,
             focusedPlaceholderColor = DsTheme.colors.textSecondary.copy(alpha = 0.5f),
             unfocusedPlaceholderColor = DsTheme.colors.textSecondary.copy(alpha = 0.3f)
         )

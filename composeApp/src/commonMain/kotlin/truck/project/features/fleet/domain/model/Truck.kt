@@ -9,6 +9,7 @@ data class Truck(
     val adminId: String = "",
     val plateNumber: PlateNumber,
     val model: String = "",
+    val origin: String = "",
     val capacity: Double = 0.0,
     val imageUrl: String? = null,
     val imageUrls: List<String> = emptyList(),
