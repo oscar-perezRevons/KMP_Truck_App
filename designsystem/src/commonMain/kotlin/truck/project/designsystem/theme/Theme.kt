@@ -24,11 +24,17 @@ object DsTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalDsSpacing.current
+
+    val strings: DsStrings
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalDsStrings.current
 }
 
 @Composable
 fun DsTheme(
     mode: ThemeMode = ThemeMode.SYSTEM,
+    language: AppLanguage = AppLanguage.ES,
     content: @Composable () -> Unit
 ) {
     val darkTheme = when (mode) {
@@ -38,11 +44,13 @@ fun DsTheme(
     }
 
     val colors = if (darkTheme) DarkColors else LightColors
+    val strings = if (language == AppLanguage.EN) EnStrings else EsStrings
 
     CompositionLocalProvider(
         LocalDsColors provides colors,
         LocalDsTypography provides Typography,
         LocalDsSpacing provides DsSpacing(),
+        LocalDsStrings provides strings,
         content = content
     )
 }

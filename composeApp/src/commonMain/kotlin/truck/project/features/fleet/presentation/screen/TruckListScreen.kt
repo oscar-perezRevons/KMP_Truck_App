@@ -39,7 +39,7 @@ fun TruckListScreen(
             ) {
                 Text(
                     text = "Gestión de Flota",
-                    style = DsTheme.typography.heading,
+                    style = DsTheme.typography.headlineLarge,
                     color = DsTheme.colors.primary,
                     fontWeight = FontWeight.Bold
                 )
@@ -67,7 +67,7 @@ fun TruckListScreen(
                             ListItem(
                                 colors = ListItemDefaults.colors(containerColor = DsTheme.colors.background),
                                 headlineContent = {
-                                    Text(truck.plateNumber.value, style = DsTheme.typography.body, color = DsTheme.colors.textPrimary)
+                                    Text(truck.plateNumber.value, style = DsTheme.typography.bodyLarge, color = DsTheme.colors.textPrimary)
                                 },
                                 supportingContent = {
                                     val displayStatus = if (truck.statusTranslated != null) {
@@ -75,7 +75,7 @@ fun TruckListScreen(
                                     } else {
                                         truck.status.name
                                     }
-                                    Text("${truck.model} • $displayStatus", color = DsTheme.colors.textPrimary.copy(alpha = 0.7f))
+                                    Text("${truck.model} • $displayStatus", color = DsTheme.colors.textPrimary.copy(alpha = 0.7f), style = DsTheme.typography.bodyMedium)
                                 },
                                 trailingContent = {
                                     Row {

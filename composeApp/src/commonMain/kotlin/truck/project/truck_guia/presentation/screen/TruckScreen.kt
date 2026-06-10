@@ -40,7 +40,7 @@ fun TruckScreen(
             ) {
                 Text(
                     text = "Gestión de Camiones",
-                    style = DsTheme.typography.heading,
+                    style = DsTheme.typography.headlineLarge,
                     color = DsTheme.colors.primary,
                     fontWeight = FontWeight.Bold
                 )
@@ -63,7 +63,7 @@ fun TruckScreen(
                 ) {
                     Text(
                         text = if (state.editingTruck == null) "Registrar Nuevo Camión" else "Editar Camión",
-                        style = DsTheme.typography.body,
+                        style = DsTheme.typography.bodyLarge,
                         color = DsTheme.colors.textPrimary
                     )
 
@@ -104,7 +104,7 @@ fun TruckScreen(
 
             Text(
                 "Lista de Flota (${state.trucks.size})",
-                style = DsTheme.typography.heading,
+                style = DsTheme.typography.headlineMedium,
                 color = DsTheme.colors.textPrimary,
                 modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
             )
@@ -122,7 +122,7 @@ fun TruckScreen(
                             ListItem(
                                 colors = ListItemDefaults.colors(containerColor = DsTheme.colors.background),
                                 headlineContent = {
-                                    Text(truck.licensePlate.value, style = DsTheme.typography.body, color = DsTheme.colors.textPrimary)
+                                    Text(truck.licensePlate.value, style = DsTheme.typography.bodyLarge, color = DsTheme.colors.textPrimary)
                                 },
                                 supportingContent = {
                                     val displayStatus = if (truck.statusTranslated != null) {
@@ -130,7 +130,7 @@ fun TruckScreen(
                                     } else {
                                         truck.status
                                     }
-                                    Text("${truck.model} • $displayStatus", color = DsTheme.colors.textPrimary.copy(alpha = 0.7f))
+                                    Text("${truck.model} • $displayStatus", color = DsTheme.colors.textPrimary.copy(alpha = 0.7f), style = DsTheme.typography.bodyMedium)
                                 },
                                 trailingContent = {
                                     Row {

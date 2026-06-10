@@ -73,6 +73,10 @@ kotlin {
             implementation(libs.firebase.database)
             implementation(libs.firebase.messaging)
             implementation(libs.androidx.work.runtime)
+            implementation(libs.google.maps.compose)
+            implementation(libs.play.services.maps)
+            implementation(libs.play.services.location)
+            implementation(libs.accompanist.permissions)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

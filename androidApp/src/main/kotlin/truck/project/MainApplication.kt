@@ -10,7 +10,7 @@ import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
 import org.koin.android.ext.koin.androidContext
 import truck.project.di.initKoin
-import truck.project.data.remote.FirebaseConfig
+import truck.project.core.data.remote.FirebaseConfig
 import org.koin.dsl.module
 
 class MainApplication : Application() {
@@ -18,7 +18,6 @@ class MainApplication : Application() {
         super.onCreate()
         FirebaseApp.initializeApp(this)
 
-        // Configuración de Koin usando la nueva estructura modular
         initKoin {
             androidContext(this@MainApplication)
             modules(

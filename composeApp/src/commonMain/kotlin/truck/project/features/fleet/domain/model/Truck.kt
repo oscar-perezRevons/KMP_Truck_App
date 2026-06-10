@@ -6,10 +6,12 @@ import truck.project.features.fleet.domain.vo.PlateNumber
 @Serializable
 data class Truck(
     val id: String = "",
+    val adminId: String = "",
     val plateNumber: PlateNumber,
     val model: String = "",
     val capacity: Double = 0.0,
     val imageUrl: String? = null,
+    val imageUrls: List<String> = emptyList(),
     val status: TruckStatus = TruckStatus.AVAILABLE,
     val statusTranslated: String? = null,
     val needsTranslation: Boolean = false

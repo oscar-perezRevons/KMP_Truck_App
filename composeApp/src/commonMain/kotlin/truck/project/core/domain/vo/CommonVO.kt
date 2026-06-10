@@ -12,7 +12,7 @@ value class Email(val value: String) {
     
     companion object {
         fun isValid(email: String): Boolean {
-            val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-z]{2,}\$".toRegex()
+            val emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$".toRegex()
             return email.matches(emailRegex)
         }
     }
@@ -22,7 +22,7 @@ value class Email(val value: String) {
 @Serializable
 value class Password(val value: String) {
     init {
-        require(value.length >= 6) { "Password must be at least 6 characters" }
+        require(value.length >= 4) { "Password must be at least 4 characters" }
     }
 }
 

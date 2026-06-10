@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "2a9a3b2555983c8fd3b197f0f5fbb1e0",
+    "identityHash": "acbb5b64c10d0c8707a4cd2df014ab6e",
     "entities": [
       {
         "tableName": "trucks",
@@ -64,7 +64,7 @@
       },
       {
         "tableName": "drivers",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fullName` TEXT NOT NULL, `dni` TEXT NOT NULL, `licenseNumber` TEXT NOT NULL, `pin` TEXT NOT NULL, `photoUrl` TEXT, `isActive` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fullName` TEXT NOT NULL, `dni` TEXT NOT NULL, `licenseNumber` TEXT NOT NULL, `pin` TEXT NOT NULL, `email` TEXT, `password` TEXT, `photoUrl` TEXT, `isActive` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -95,6 +95,16 @@
             "columnName": "pin",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "password",
+            "columnName": "password",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "photoUrl",
@@ -239,7 +249,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2a9a3b2555983c8fd3b197f0f5fbb1e0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'acbb5b64c10d0c8707a4cd2df014ab6e')"
     ]
   }
 }

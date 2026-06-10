@@ -14,10 +14,12 @@ sealed interface AdminLoginIntent {
     data class EmailChanged(val value: String) : AdminLoginIntent
     data class PasswordChanged(val value: String) : AdminLoginIntent
     data object LoginClicked : AdminLoginIntent
+    data object RegisterClicked : AdminLoginIntent
     data object BackClicked : AdminLoginIntent
 }
 
 sealed interface AdminLoginEffect {
     data object NavigateToDashboard : AdminLoginEffect
+    data object NavigateToRegister : AdminLoginEffect
     data object NavigateBack : AdminLoginEffect
 }

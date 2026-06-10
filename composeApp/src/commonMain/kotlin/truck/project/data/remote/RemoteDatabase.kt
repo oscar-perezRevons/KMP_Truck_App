@@ -3,7 +3,7 @@ package truck.project.data.remote
 import truck.project.features.fleet.data.local.TruckEntity
 import truck.project.features.fleet.data.local.DriverEntity
 import truck.project.features.trips.data.local.TripEntity
-import truck.project.features.driver.data.local.ExpenseEntity
+import truck.project.features.trips.data.local.ExpenseEntity
 
 interface RemoteDatabase {
     // Trucks

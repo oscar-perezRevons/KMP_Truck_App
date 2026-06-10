@@ -42,7 +42,7 @@ fun PrimaryButton(
     ) {
         Text(
             text = text,
-            style = DsTheme.typography.body
+            style = DsTheme.typography.bodyLarge
         )
     }
 }

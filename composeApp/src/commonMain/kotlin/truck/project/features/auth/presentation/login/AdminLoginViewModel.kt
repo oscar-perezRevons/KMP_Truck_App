@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import truck.project.core.domain.vo.Email
 import truck.project.core.domain.vo.Password
-import truck.project.features.auth.domain.repository.AuthRepository
+import truck.project.features.admin.domain.repository.AdminRepository
 
 class AdminLoginViewModel(
-    private val authRepository: AuthRepository
+    private val adminRepository: AdminRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AdminLoginState())
@@ -32,6 +32,9 @@ class AdminLoginViewModel(
                 _state.update { it.copy(password = intent.value, passwordError = null) }
             }
             AdminLoginIntent.LoginClicked -> login()
+            AdminLoginIntent.RegisterClicked -> {
+                viewModelScope.launch { _effect.send(AdminLoginEffect.NavigateToRegister) }
+            }
             AdminLoginIntent.BackClicked -> {
                 viewModelScope.launch { _effect.send(AdminLoginEffect.NavigateBack) }
             }
@@ -44,13 +47,13 @@ class AdminLoginViewModel(
 
         var hasError = false
         
-        if (!Email.isValid(emailValue)) {
-            _state.update { it.copy(emailError = "Correo electrónico inválido") }
+        if (emailValue.isBlank() || !Email.isValid(emailValue)) {
+            _state.update { it.copy(emailError = "Ingrese un correo válido") }
             hasError = true
         }
 
-        if (passwordValue.length < 6) {
-             _state.update { it.copy(passwordError = "Contraseña demasiado corta") }
+        if (passwordValue.isBlank() || passwordValue.length < 4) {
+             _state.update { it.copy(passwordError = "Contraseña demasiado corta (mínimo 4 caracteres)") }
              hasError = true
         }
 
@@ -59,7 +62,7 @@ class AdminLoginViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
             
-            val result = authRepository.loginAdmin(
+            val result = adminRepository.login(
                 Email(emailValue),
                 Password(passwordValue)
             )

@@ -4,23 +4,26 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
-import truck.project.features.fleet.data.local.DriverDao
-import truck.project.features.fleet.data.local.DriverEntity
 import truck.project.features.fleet.data.local.TruckDao
 import truck.project.features.fleet.data.local.TruckEntity
+import truck.project.features.fleet.data.local.DriverDao
+import truck.project.features.fleet.data.local.DriverEntity
 import truck.project.features.trips.data.local.TripDao
 import truck.project.features.trips.data.local.TripEntity
 import truck.project.features.trips.data.local.ExpenseDao
 import truck.project.features.trips.data.local.ExpenseEntity
+import truck.project.features.admin.data.local.AdminDao
+import truck.project.features.admin.data.local.AdminEntity
 
 @Database(
     entities = [
         TruckEntity::class,
         DriverEntity::class,
         TripEntity::class,
-        ExpenseEntity::class
+        ExpenseEntity::class,
+        AdminEntity::class
     ],
-    version = 4
+    version = 15
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -28,6 +31,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun driverDao(): DriverDao
     abstract fun tripDao(): TripDao
     abstract fun expenseDao(): ExpenseDao
+    abstract fun adminDao(): AdminDao
 }
 
 @Suppress("KotlinNoActualForExpect")

@@ -9,7 +9,15 @@ data class Trip(
     val truckId: String,
     val origin: String,
     val destination: String,
+    val startLat: Double? = null,
+    val startLng: Double? = null,
+    val endLat: Double? = null,
+    val endLng: Double? = null,
     val status: TripStatus,
+    val currentSpeed: Double = 0.0,
+    val currentLocation: String? = null,
+    val currentLat: Double? = null,
+    val currentLng: Double? = null,
     val startOdometer: OdometerValue? = null,
     val endOdometer: OdometerValue? = null,
     val startTime: LocalDateTime? = null,
@@ -31,5 +39,5 @@ data class Expense(
 )
 
 enum class ExpenseCategory {
-    FUEL, TOLL, FOOD, OTHER
+    FUEL, TOLL, FOOD, LODGING, OTHER
 }

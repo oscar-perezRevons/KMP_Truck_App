@@ -1,13 +1,18 @@
 package truck.project.features.admin.presentation.monitor
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,219 +20,333 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import truck.project.designsystem.components.VolvoScaffold
-import truck.project.designsystem.theme.LocalDsColors
-import truck.project.designsystem.theme.VolvoYellow
+import androidx.compose.ui.layout.ContentScale
+import org.jetbrains.compose.resources.painterResource
+import truck.project.designsystem.theme.DsTheme
+import truck.project.features.admin.presentation.dashboard.AdminDashboardViewModel
+import truck.project.features.admin.presentation.dashboard.AdminDashboardState
+import truck.project.features.admin.presentation.dashboard.AdminDashboardIntent
+import truck.project.features.admin.presentation.forms.GoogleMapView
+import coil3.compose.AsyncImage
+import kotlinproject.composeapp.generated.resources.Res
+import kotlinproject.composeapp.generated.resources.logo
+import kotlinproject.composeapp.generated.resources.imagen1
+import kotlinproject.composeapp.generated.resources.imagen2
+import kotlinproject.composeapp.generated.resources.imagen4
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TripMonitorScreen(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    viewModel: AdminDashboardViewModel = org.koin.compose.viewmodel.koinViewModel()
 ) {
+    val state by viewModel.state.collectAsState()
     var selectedTab by remember { mutableStateOf(0) }
-    val colors = LocalDsColors.current
+    val colors = DsTheme.colors
+    
+    // Multi-trip support
+    var currentTripIndex by remember { mutableStateOf(0) }
+    val activeTrip = state.activeTrips.getOrNull(currentTripIndex)
 
-    VolvoScaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("MONITOR EN VIVO", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color.White)
-                    }
-                },
-                actions = {
-                    Text("● LIVE", color = Color(0xFF4ADE80), fontSize = 12.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(end = 16.dp))
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
-            )
+    LaunchedEffect(activeTrip?.id) {
+        activeTrip?.id?.let { 
+            viewModel.onIntent(AdminDashboardIntent.SelectTripForMonitor(it)) 
         }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(24.dp)
-        ) {
-            // Driver Card
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                color = colors.surface.copy(alpha = 0.5f)
-            ) {
-                Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(modifier = Modifier.size(40.dp).background(VolvoYellow.copy(alpha = 0.1f), CircleShape), contentAlignment = Alignment.Center) {
-                        Icon(Icons.Default.LocalShipping, contentDescription = null, tint = VolvoYellow, modifier = Modifier.size(20.dp))
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text("CONDUCTOR ACTIVO", color = colors.textSecondary, fontSize = 10.sp)
-                        Text("Carlos Rodríguez", color = Color.White, fontWeight = FontWeight.Bold)
-                        Text("VLV-2891", color = VolvoYellow, fontSize = 12.sp)
-                    }
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text("Actualizado", color = colors.textSecondary, fontSize = 10.sp)
-                        Text("10:52", color = Color(0xFF4ADE80), fontWeight = FontWeight.Bold)
-                    }
-                }
-            }
+    }
 
-            Spacer(modifier = Modifier.height(24.dp))
+    val infiniteTransition = rememberInfiniteTransition()
+    val glowAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.5f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
 
-            // Map Placeholder
-            Surface(
-                modifier = Modifier.fillMaxWidth().height(150.dp),
-                shape = RoundedCornerShape(16.dp),
-                color = Color.DarkGray.copy(alpha = 0.3f)
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text("MAPA EN VIVO", color = colors.textSecondary)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Progress
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Progreso del Trayecto", color = Color.White, fontWeight = FontWeight.Bold)
-                Text("38%", color = VolvoYellow, fontWeight = FontWeight.Bold)
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            LinearProgressIndicator(
-                progress = { 0.38f },
-                modifier = Modifier.fillMaxWidth().height(12.dp).clip(CircleShape),
-                color = VolvoYellow,
-                trackColor = colors.surface
+    Box(modifier = Modifier.fillMaxSize().background(colors.background)) {
+        Image(
+            painter = painterResource(Res.drawable.imagen1),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            alpha = if (colors.isLight) 0.1f else 0.2f
+        )
+        
+        Box(modifier = Modifier.fillMaxSize().background(
+            Brush.verticalGradient(
+                colors = listOf(Color.Transparent, colors.background.copy(alpha = 0.8f), colors.background)
             )
+        ))
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Tabs
-            Row(modifier = Modifier.fillMaxWidth().height(48.dp).background(colors.surface, RoundedCornerShape(12.dp))) {
-                TabButton("DETALLES", selectedTab == 0, modifier = Modifier.weight(1f)) { selectedTab = 0 }
-                TabButton("GASTOS VIVO", selectedTab == 1, modifier = Modifier.weight(1f)) { selectedTab = 1 }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            if (selectedTab == 0) {
-                InfoItem("ORIGEN", "Planta Central")
-                Spacer(modifier = Modifier.height(16.dp))
-                InfoItem("DESTINO", "Almacén Norte")
-            } else {
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    color = colors.surface.copy(alpha = 0.5f)
-                ) {
-                    Column(modifier = Modifier.padding(20.dp)) {
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                            Text("Total acumulado", color = Color.White, fontSize = 14.sp)
-                            Text("$97.50", color = VolvoYellow, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                TopAppBar(
+                    title = { 
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("MONITOR EN VIVO", style = DsTheme.typography.displayMedium.copy(fontSize = 20.sp), color = colors.textPrimary, fontWeight = FontWeight.Black)
+                            if (state.activeTrips.size > 1) {
+                                Surface(
+                                    modifier = Modifier.padding(start = 12.dp),
+                                    shape = CircleShape,
+                                    color = colors.primary.copy(alpha = 0.1f),
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, colors.primary)
+                                ) {
+                                    Text("${currentTripIndex + 1} / ${state.activeTrips.size}", modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp), color = colors.primary, style = DsTheme.typography.labelSmall)
+                                }
+                            }
                         }
-                        
-                        Spacer(modifier = Modifier.height(32.dp))
-                        
-                        Row(
-                            modifier = Modifier.fillMaxWidth().height(160.dp),
-                            horizontalArrangement = Arrangement.spacedBy(24.dp),
-                            verticalAlignment = Alignment.Bottom
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack, modifier = Modifier.background(colors.textPrimary.copy(alpha = 0.1f), CircleShape)) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = colors.textPrimary)
+                        }
+                    },
+                    actions = {
+                        if (state.activeTrips.size > 1) {
+                            IconButton(onClick = { currentTripIndex = (currentTripIndex + 1) % state.activeTrips.size }) {
+                                Icon(Icons.Default.SkipNext, contentDescription = "Siguiente Viaje", tint = colors.primary)
+                            }
+                        }
+                        Surface(
+                            shape = CircleShape,
+                            color = Color(0xFF4ADE80).copy(alpha = 0.15f),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF4ADE80)),
+                            modifier = Modifier.padding(end = 16.dp)
                         ) {
-                            Bar(0.85f, VolvoYellow, "Combustible", "$85.50")
-                            Bar(0.25f, Color(0xFF10B981), "Peajes", "$12.00")
-                            Bar(0.40f, Color(0xFF3B82F6), "Comida", "$25.00")
-                            Bar(0.15f, Color(0xFFEF4444), "Otros", "$5.00")
+                             Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Box(modifier = Modifier.size(6.dp).background(Color(0xFF4ADE80), CircleShape))
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text("LIVE", color = Color(0xFF4ADE80), style = DsTheme.typography.labelSmall, fontWeight = FontWeight.Black)
+                             }
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                )
+            }
+        ) { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                if (activeTrip == null) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(Icons.Default.CloudOff, contentDescription = null, tint = colors.textSecondary.copy(alpha = 0.2f), modifier = Modifier.size(100.dp))
+                            Text("NO HAY VIAJES ACTIVOS", color = colors.textSecondary, style = DsTheme.typography.headlineMedium)
+                        }
+                    }
+                } else {
+                    // Operador Activo Card
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp),
+                        color = colors.surface.copy(alpha = 0.9f),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, colors.textPrimary.copy(alpha = 0.1f))
+                    ) {
+                        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Surface(modifier = Modifier.size(52.dp), shape = CircleShape, color = colors.secondary.copy(alpha = 0.1f)) {
+                                    val driver = state.drivers.find { it.id == activeTrip.driverId }
+                                    if (driver?.photoUrl != null) {
+                                        AsyncImage(model = driver.photoUrl, contentDescription = null, modifier = Modifier.fillMaxSize().clip(CircleShape), contentScale = ContentScale.Crop)
+                                    } else {
+                                        Icon(Icons.Default.Person, contentDescription = null, tint = colors.secondary, modifier = Modifier.padding(12.dp))
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text("CONDUCTOR ACTIVO", color = colors.textSecondary, style = DsTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                                Text(state.drivers.find { it.id == activeTrip.driverId }?.name ?: "OPERADOR", color = colors.textPrimary, style = DsTheme.typography.bodyLarge, fontWeight = FontWeight.Black)
+                                val truck = state.trucks.find { it.id == activeTrip.truckId }
+                                Text("${truck?.plateNumber?.value ?: "---"} • ${truck?.model ?: "Volvo"}", color = colors.secondary, style = DsTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                            }
+                            Column(horizontalAlignment = Alignment.End) {
+                                Text("Actualizado", color = colors.textSecondary, style = DsTheme.typography.labelSmall)
+                                Text("16:18", color = Color(0xFF4ADE80), fontWeight = FontWeight.Black, style = DsTheme.typography.bodyLarge)
+                            }
+                        }
+                    }
+
+                    // Route Progress Visual
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().height(250.dp),
+                        shape = RoundedCornerShape(28.dp),
+                        color = Color.Black.copy(alpha = 0.4f),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, colors.textPrimary.copy(alpha = 0.1f))
+                    ) {
+                        if (activeTrip != null) {
+                            GoogleMapView(
+                                modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(28.dp)),
+                                startPoint = if (activeTrip.startLat != null) Pair(activeTrip.startLat!!, activeTrip.startLng ?: 0.0) else null,
+                                endPoint = if (activeTrip.endLat != null) Pair(activeTrip.endLat!!, activeTrip.endLng ?: 0.0) else null,
+                                currentPoint = if (activeTrip.currentLat != null) Pair(activeTrip.currentLat!!, activeTrip.currentLng ?: 0.0) else null
+                            )
+                        } else {
+                            Box(contentAlignment = Alignment.Center) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Icon(Icons.Default.Map, contentDescription = null, tint = colors.textPrimary.copy(alpha = 0.1f), modifier = Modifier.size(64.dp))
+                                    Text("GEOLOCALIZACIÓN SATELITAL", color = colors.textPrimary.copy(alpha = 0.2f), style = DsTheme.typography.labelSmall, fontWeight = FontWeight.Black, letterSpacing = 2.sp)
+                                }
+                            }
+                        }
+                    }
+
+                    // Telemetry & Details
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp),
+                        color = colors.surface.copy(alpha = 0.6f),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, colors.textPrimary.copy(alpha = 0.05f))
+                    ) {
+                        Column(modifier = Modifier.padding(20.dp)) {
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Text("Progreso del Trayecto", color = colors.textPrimary, style = DsTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+                                Text("${activeTrip.progress}%", color = colors.secondary, style = DsTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
+                            }
+                            Spacer(modifier = Modifier.height(12.dp))
+                            LinearProgressIndicator(
+                                progress = { activeTrip.progress / 100f },
+                                modifier = Modifier.fillMaxWidth().height(10.dp).clip(CircleShape),
+                                color = colors.secondary,
+                                trackColor = colors.textPrimary.copy(alpha = 0.1f)
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            activeTrip.currentLocation?.let {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(Icons.Default.Place, contentDescription = null, tint = colors.primary, modifier = Modifier.size(14.dp))
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text("Ubicación Reportada: $it", color = colors.textSecondary, style = DsTheme.typography.labelSmall)
+                                }
+                            }
+                        }
+                    }
+
+                    // Tabs
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        color = colors.textPrimary.copy(alpha = 0.05f)
+                    ) {
+                        Row(modifier = Modifier.padding(4.dp)) {
+                            MonitorTabItem(text = "DETALLES", isSelected = selectedTab == 0, modifier = Modifier.weight(1f)) { selectedTab = 0 }
+                            MonitorTabItem(text = "GASTOS VIVO", isSelected = selectedTab == 1, modifier = Modifier.weight(1f)) { selectedTab = 1 }
+                        }
+                    }
+
+                    if (selectedTab == 0) {
+                        LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.weight(1f)) {
+                            item { MonitorInfoRow("PUNTO DE SALIDA", activeTrip.origin, colors.primary) }
+                            item { MonitorInfoRow("PUNTO DE LLEGADA", activeTrip.destination, colors.secondary) }
+                            item { 
+                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    TelemetryCard(icon = Icons.Default.Speed, value = "${activeTrip.currentSpeed.toInt()} km/h", label = "Velocidad", modifier = Modifier.weight(1f))
+                                    TelemetryCard(icon = Icons.Default.Timer, value = "1:42 hr", label = "En marcha", modifier = Modifier.weight(1f))
+                                }
+                            }
+                        }
+                    } else {
+                        LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.weight(1f)) {
+                            if (state.selectedTripExpenses.isEmpty()) {
+                                item { 
+                                    Box(modifier = Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) {
+                                        Text("Sin gastos reportados", color = colors.textSecondary.copy(alpha = 0.5f))
+                                    }
+                                }
+                            }
+                            items(state.selectedTripExpenses) { expense ->
+                                LiveExpenseRow(expense)
+                            }
                         }
                     }
                 }
-                
-                Spacer(modifier = Modifier.height(24.dp))
-                
-                Text("ÚLTIMOS MOVIMIENTOS", color = colors.textSecondary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(12.dp))
-                ExpenseRow("Peaje", "09:15", "$12.00")
-                ExpenseRow("Combustible", "08:32", "$85.50")
             }
         }
     }
 }
 
 @Composable
-fun TabButton(text: String, isSelected: Boolean, modifier: Modifier, onClick: () -> Unit) {
+fun MonitorTabItem(text: String, isSelected: Boolean, modifier: Modifier, onClick: () -> Unit) {
+    val colors = DsTheme.colors
     Box(
         modifier = modifier
             .fillMaxHeight()
-            .padding(4.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .background(if (isSelected) VolvoYellow else Color.Transparent)
+            .clip(RoundedCornerShape(12.dp))
+            .background(if (isSelected) colors.secondary else Color.Transparent)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Text(text, color = if (isSelected) Color.Black else Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text(text, color = if (isSelected) Color.Black else colors.textSecondary, style = DsTheme.typography.labelSmall, fontWeight = FontWeight.Black)
     }
 }
 
 @Composable
-fun InfoItem(label: String, value: String) {
-    val colors = LocalDsColors.current
+fun MonitorInfoRow(label: String, value: String, color: Color) {
+    val colors = DsTheme.colors
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        color = colors.surface.copy(alpha = 0.3f)
+        shape = RoundedCornerShape(16.dp),
+        color = colors.surface.copy(alpha = 0.5f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, colors.textPrimary.copy(alpha = 0.05f))
     ) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(modifier = Modifier.size(8.dp).background(colors.primary, CircleShape))
+            Box(modifier = Modifier.size(10.dp).background(color, CircleShape))
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(label, color = colors.textSecondary, fontSize = 10.sp)
-                Text(value, color = Color.White, fontWeight = FontWeight.Bold)
+                Text(label, color = colors.textSecondary, style = DsTheme.typography.labelSmall)
+                Text(value.uppercase(), color = colors.textPrimary, style = DsTheme.typography.bodyLarge, fontWeight = FontWeight.Black)
             }
         }
     }
 }
 
 @Composable
-fun ExpenseRow(label: String, time: String, amount: String) {
-    val colors = LocalDsColors.current
+fun TelemetryCard(icon: ImageVector, value: String, label: String, modifier: Modifier) {
+    val colors = DsTheme.colors
     Surface(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-        shape = RoundedCornerShape(12.dp),
-        color = colors.surface.copy(alpha = 0.3f)
+        modifier = modifier,
+        shape = RoundedCornerShape(20.dp),
+        color = colors.surface.copy(alpha = 0.4f)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Icon(icon, contentDescription = null, tint = colors.secondary, modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(value, color = colors.textPrimary, style = DsTheme.typography.bodyLarge, fontWeight = FontWeight.Black)
+            Text(label, color = colors.textSecondary, style = DsTheme.typography.labelSmall)
+        }
+    }
+}
+
+@Composable
+fun LiveExpenseRow(expense: truck.project.features.driver.domain.model.Expense) {
+    val colors = DsTheme.colors
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = colors.surface.copy(alpha = 0.4f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, colors.textPrimary.copy(alpha = 0.05f))
     ) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(modifier = Modifier.size(40.dp).background(Color.White.copy(alpha = 0.05f), CircleShape), contentAlignment = Alignment.Center) {
-                Text("$", color = VolvoYellow, fontWeight = FontWeight.Bold)
+            Surface(modifier = Modifier.size(40.dp), shape = CircleShape, color = colors.primary.copy(alpha = 0.1f)) {
+                Icon(Icons.Default.Receipt, contentDescription = null, tint = colors.primary, modifier = Modifier.padding(10.dp))
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(label, color = Color.White, fontWeight = FontWeight.Bold)
-                Text(time, color = colors.textSecondary, fontSize = 12.sp)
+                Text(expense.category.name, color = colors.textPrimary, style = DsTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                Text("${expense.timestamp.hour}:${expense.timestamp.minute}", color = colors.textSecondary, style = DsTheme.typography.labelSmall)
             }
-            Text(amount, color = VolvoYellow, fontWeight = FontWeight.Bold)
+            Text("$${expense.amount}", color = colors.secondary, style = DsTheme.typography.bodyLarge, fontWeight = FontWeight.Black)
         }
-    }
-}
-
-@Composable
-fun Bar(heightFraction: Float, color: Color, label: String, amount: String) {
-    Column(modifier = Modifier.width(60.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(amount, color = color, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(8.dp))
-        Box(
-            modifier = Modifier
-                .width(32.dp)
-                .fillMaxHeight(heightFraction)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(color, color.copy(alpha = 0.3f))
-                    ),
-                    RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp)
-                )
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(label.take(4), color = Color.White.copy(alpha = 0.5f), fontSize = 10.sp)
     }
 }

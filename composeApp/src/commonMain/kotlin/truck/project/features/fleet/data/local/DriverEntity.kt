@@ -5,11 +5,15 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "drivers")
 data class DriverEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val fullName: String,
-    val dni: String,
-    val licenseNumber: String,
-    val pin: String, // Value Object DriverPin will be used in Domain
+    @PrimaryKey val id: String = "",
+    val adminId: String = "", // Associated admin/company
+    val fullName: String = "",
+    val dni: String = "",
+    val licenseNumber: String = "",
+    val pin: String? = null,
+    val email: String? = null,
+    val password: String? = null,
     val photoUrl: String? = null,
+    val photoUrls: String? = null, // Comma separated URLs
     val isActive: Boolean = true
 )

@@ -9,23 +9,26 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import truck.project.features.fleet.domain.model.Truck
 import truck.project.features.admin.domain.repository.AdminRepository
+import truck.project.features.admin.domain.repository.StorageMode
 import truck.project.features.fleet.domain.vo.PlateNumber
-import truck.project.core.storage.ImageStorage
 import kotlinx.datetime.Clock
 
 data class NewTruckState(
+    val id: String? = null,
     val plate: String = "",
     val model: String = "",
     val capacity: String = "",
-    val photoData: ByteArray? = null,
+    val selectedPhoto: ByteArray? = null,
+    val currentImageUrl: String? = null,
+    val storageMode: StorageMode = StorageMode.CLOUD,
     val isLoading: Boolean = false,
     val error: String? = null,
-    val isSuccess: Boolean = false
+    val isSuccess: Boolean = false,
+    val isEditMode: Boolean = false
 )
 
 class NewTruckViewModel(
-    private val repository: AdminRepository,
-    private val imageStorage: ImageStorage
+    private val repository: AdminRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NewTruckState())
@@ -34,7 +37,33 @@ class NewTruckViewModel(
     fun onPlateChanged(value: String) = _state.update { it.copy(plate = value) }
     fun onModelChanged(value: String) = _state.update { it.copy(model = value) }
     fun onCapacityChanged(value: String) = _state.update { it.copy(capacity = value) }
-    fun onPhotoSelected(data: ByteArray) = _state.update { it.copy(photoData = data) }
+    
+    fun onPhotoSelected(data: ByteArray) = _state.update { 
+        it.copy(selectedPhoto = data) 
+    }
+
+    fun setEditTruck(truck: Truck) {
+        _state.update { 
+            it.copy(
+                id = truck.id,
+                plate = truck.plateNumber.value,
+                model = truck.model,
+                capacity = truck.capacity.toString(),
+                currentImageUrl = truck.imageUrl,
+                isEditMode = true
+            )
+        }
+    }
+
+    fun loadTruckById(truckId: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            repository.getTruckById(truckId)?.let { truck ->
+                setEditTruck(truck)
+            }
+            _state.update { it.copy(isLoading = false) }
+        }
+    }
 
     fun saveTruck() {
         val currentState = _state.value
@@ -46,19 +75,35 @@ class NewTruckViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
             
-            var photoUrl: String? = null
-            currentState.photoData?.let { data ->
-                photoUrl = imageStorage.uploadToCloud(data, "trucks/${currentState.plate}.jpg")
-            }
+            var finalImageUrl = currentState.currentImageUrl
 
+            // If a new local photo is selected, upload it
+            currentState.selectedPhoto?.let { data ->
+                repository.addTruckPhoto(data, "truck_${currentState.plate}_${Clock.System.now().toEpochMilliseconds()}.jpg").onSuccess {
+                    finalImageUrl = it
+                }.onFailure {
+                    _state.update { s -> s.copy(isLoading = false, error = "Error al subir imagen: ${it.message}") }
+                    return@launch
+                }
+            }
+            
             val truck = Truck(
-                id = Clock.System.now().toEpochMilliseconds().toString(),
+                id = currentState.id ?: Clock.System.now().toEpochMilliseconds().toString(),
                 plateNumber = PlateNumber(currentState.plate),
                 model = currentState.model,
                 capacity = currentState.capacity.toDoubleOrNull() ?: 0.0,
-                imageUrl = photoUrl
+                imageUrl = finalImageUrl,
+                imageUrls = if (finalImageUrl != null) listOf(finalImageUrl!!) else emptyList()
             )
-            repository.addTruck(truck).onSuccess {
+            
+            // Pass the finalImageUrl in the add/updateTruck calls
+            val result = if (currentState.isEditMode) {
+                repository.updateTruck(truck, null, currentState.storageMode)
+            } else {
+                repository.addTruck(truck, null, currentState.storageMode)
+            }
+
+            result.onSuccess {
                 _state.update { it.copy(isLoading = false, isSuccess = true) }
             }.onFailure { e ->
                 _state.update { it.copy(isLoading = false, error = e.message) }

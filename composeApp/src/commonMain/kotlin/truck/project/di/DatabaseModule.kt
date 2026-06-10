@@ -10,4 +10,5 @@ val databaseModule = module {
     single { get<AppDatabase>().driverDao() }
     single { get<AppDatabase>().tripDao() }
     single { get<AppDatabase>().expenseDao() }
+    single { get<AppDatabase>().adminDao() }
 }

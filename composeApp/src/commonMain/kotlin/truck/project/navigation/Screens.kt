@@ -54,8 +54,28 @@ sealed class Screens {
     }
 
     @Serializable
+    data object AssignTrip : Screens() {
+        const val route = "assign_trip"
+    }
+
+    @Serializable
     data object TripMonitor : Screens() {
         const val route = "trip_monitor"
+    }
+
+    @Serializable
+    data object VolvoShowroom : Screens() {
+        const val route = "volvo_showroom"
+    }
+
+    @Serializable
+    data object DriverHistory : Screens() {
+        const val route = "driver_history"
+    }
+
+    @Serializable
+    data object DriverStats : Screens() {
+        const val route = "driver_stats"
     }
 
     @Serializable

@@ -2,6 +2,7 @@ package truck.project
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import truck.project.core.data.local.AppDatabase
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
