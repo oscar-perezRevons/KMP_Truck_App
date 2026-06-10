@@ -31,7 +31,9 @@ class NewTruckViewModel(
     private val repository: AdminRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(NewTruckState())
+    private val _state = MutableStateFlow(NewTruckState(
+        currentImageUrl = listOf("imagen1", "imagen2", "imagen3", "imagen4", "imagen5").random()
+    ))
     val state: StateFlow<NewTruckState> = _state.asStateFlow()
 
     fun onPlateChanged(value: String) = _state.update { it.copy(plate = value) }
@@ -75,16 +77,11 @@ class NewTruckViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
             
-            var finalImageUrl = currentState.currentImageUrl
-
-            // If a new local photo is selected, upload it
-            currentState.selectedPhoto?.let { data ->
-                repository.addTruckPhoto(data, "truck_${currentState.plate}_${Clock.System.now().toEpochMilliseconds()}.jpg").onSuccess {
-                    finalImageUrl = it
-                }.onFailure {
-                    _state.update { s -> s.copy(isLoading = false, error = "Error al subir imagen: ${it.message}") }
-                    return@launch
-                }
+            // Si es un camión nuevo, usamos una imagen fija de la carpeta drawable
+            val finalImageUrl = if (currentState.isEditMode) {
+                currentState.currentImageUrl
+            } else {
+                "imagen1"
             }
             
             val truck = Truck(
@@ -93,7 +90,7 @@ class NewTruckViewModel(
                 model = currentState.model,
                 capacity = currentState.capacity.toDoubleOrNull() ?: 0.0,
                 imageUrl = finalImageUrl,
-                imageUrls = if (finalImageUrl != null) listOf(finalImageUrl!!) else emptyList()
+                imageUrls = if (finalImageUrl != null) listOf(finalImageUrl) else emptyList()
             )
             
             // Pass the finalImageUrl in the add/updateTruck calls

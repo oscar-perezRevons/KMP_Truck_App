@@ -179,38 +179,42 @@ fun DriverAssignedTripScreen(
                     Text(
                         "MISIÓN ASIGNADA",
                         color = colors.textPrimary,
-                        style = DsTheme.typography.displayMedium.copy(fontSize = 26.sp, lineHeight = 32.sp),
+                        style = DsTheme.typography.displayMedium.copy(fontSize = 32.sp, lineHeight = 38.sp),
                         fontWeight = FontWeight.Black
                     )
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Route Card
+                    // Route Card with more style
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(32.dp),
-                        color = colors.surface.copy(alpha = 0.9f),
-                        border = androidx.compose.foundation.BorderStroke(1.dp, colors.textPrimary.copy(alpha = 0.1f)),
-                        shadowElevation = 4.dp
+                        color = colors.surface.copy(alpha = 0.95f),
+                        border = androidx.compose.foundation.BorderStroke(2.dp, colors.primary.copy(alpha = 0.3f)),
+                        shadowElevation = 12.dp
                     ) {
-                        Column(modifier = Modifier.padding(24.dp)) {
+                        Column(modifier = Modifier.padding(28.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Box(modifier = Modifier.size(12.dp).background(colors.primary, CircleShape))
-                                Spacer(modifier = Modifier.width(16.dp))
+                                Surface(modifier = Modifier.size(40.dp), shape = CircleShape, color = colors.primary.copy(alpha = 0.1f)) {
+                                    Icon(Icons.Default.LocationOn, contentDescription = null, tint = colors.primary, modifier = Modifier.padding(8.dp))
+                                }
+                                Spacer(modifier = Modifier.width(20.dp))
                                 Column {
-                                    Text("PUNTO DE RECOGIDA", color = colors.textSecondary, style = DsTheme.typography.labelSmall)
-                                    Text(state.currentTrip?.origin ?: "---", color = colors.textPrimary, style = DsTheme.typography.bodyLarge, fontWeight = FontWeight.Black)
+                                    Text("PUNTO DE RECOGIDA", color = colors.textSecondary, style = DsTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                                    Text(state.currentTrip?.origin ?: "---", color = colors.textPrimary, style = DsTheme.typography.headlineLarge, fontWeight = FontWeight.Black)
                                 }
                             }
                             
-                            Box(modifier = Modifier.padding(start = 5.dp).width(2.dp).height(40.dp).background(Brush.verticalGradient(listOf(colors.primary, Color(0xFF4ADE80)))))
+                            Box(modifier = Modifier.padding(start = 19.dp).width(2.dp).height(50.dp).background(Brush.verticalGradient(listOf(colors.primary, Color(0xFF4ADE80)))))
                             
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Box(modifier = Modifier.size(12.dp).background(Color(0xFF4ADE80), CircleShape))
-                                Spacer(modifier = Modifier.width(16.dp))
+                                Surface(modifier = Modifier.size(40.dp), shape = CircleShape, color = Color(0xFF4ADE80).copy(alpha = 0.1f)) {
+                                    Icon(Icons.Default.Flag, contentDescription = null, tint = Color(0xFF4ADE80), modifier = Modifier.padding(8.dp))
+                                }
+                                Spacer(modifier = Modifier.width(20.dp))
                                 Column {
-                                    Text("DESTINO FINAL", color = colors.textSecondary, style = DsTheme.typography.labelSmall)
-                                    Text(state.currentTrip?.destination ?: "---", color = colors.textPrimary, style = DsTheme.typography.bodyLarge, fontWeight = FontWeight.Black)
+                                    Text("DESTINO FINAL", color = colors.textSecondary, style = DsTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                                    Text(state.currentTrip?.destination ?: "---", color = colors.textPrimary, style = DsTheme.typography.headlineLarge, fontWeight = FontWeight.Black)
                                 }
                             }
                         }
@@ -222,51 +226,60 @@ fun DriverAssignedTripScreen(
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(32.dp),
-                        color = colors.surface.copy(alpha = 0.6f),
-                        border = androidx.compose.foundation.BorderStroke(1.dp, colors.textPrimary.copy(alpha = 0.05f))
+                        color = colors.surface.copy(alpha = 0.7f),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, colors.textPrimary.copy(alpha = 0.1f)),
+                        shadowElevation = 6.dp
                     ) {
-                        Row(modifier = Modifier.padding(24.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
                             Surface(
-                                modifier = Modifier.size(80.dp),
-                                shape = RoundedCornerShape(20.dp),
-                                color = colors.textPrimary.copy(alpha = 0.05f)
+                                modifier = Modifier.size(100.dp),
+                                shape = RoundedCornerShape(24.dp),
+                                color = Color(0xFF1A1A1A)
                             ) {
-                                val truckPhoto = state.assignedTruck?.imageUrl ?: "https://images.volvotrucks.com/latis/Image?f=P&id=16231"
-                                AsyncImage(
-                                    model = truckPhoto,
+                                val truckPhoto = when(state.assignedTruck?.imageUrl) {
+                                    "imagen2" -> Res.drawable.imagen2
+                                    "imagen3" -> Res.drawable.imagen3
+                                    "imagen4" -> Res.drawable.imagen4
+                                    "imagen5" -> Res.drawable.imagen5
+                                    else -> Res.drawable.imagen1
+                                }
+                                Image(
+                                    painter = painterResource(truckPhoto),
                                     contentDescription = null,
                                     contentScale = ContentScale.Crop
                                 )
                             }
                             Spacer(modifier = Modifier.width(20.dp))
                             Column(modifier = Modifier.weight(1f)) {
-                                Text("UNIDAD OPERATIVA", color = colors.textSecondary, style = DsTheme.typography.labelSmall)
+                                Text("UNIDAD OPERATIVA", color = colors.textSecondary, style = DsTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
                                 Text(
                                     state.assignedTruck?.plateNumber?.value ?: "---",
                                     color = colors.textPrimary,
                                     style = DsTheme.typography.headlineMedium,
                                     fontWeight = FontWeight.Black
                                 )
-                                Text(state.assignedTruck?.model?.uppercase() ?: "S/M", color = colors.primary, style = DsTheme.typography.labelMedium)
+                                Surface(color = colors.primary.copy(alpha = 0.1f), shape = RoundedCornerShape(8.dp)) {
+                                    Text(
+                                        state.assignedTruck?.model?.uppercase() ?: "S/M", 
+                                        color = colors.primary, 
+                                        style = DsTheme.typography.labelMedium,
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             }
                         }
                     }
 
                     Spacer(modifier = Modifier.weight(1f))
 
-                    Box(modifier = Modifier.padding(vertical = 32.dp).fillMaxWidth()) {
+                    Box(modifier = Modifier.padding(bottom = 40.dp).fillMaxWidth()) {
                         val isEnRoute = state.currentTrip?.status == truck.project.features.driver.domain.model.TripStatus.EN_ROUTE
                         VolvoButton(
-                            text = if (isEnRoute) "CONTINUAR VIAJE" else "ABRIR PROTOCOLO DE SALIDA",
-                            onClick = {
-                                if (isEnRoute) {
-                                    onStartInspection()
-                                } else {
-                                    onStartInspection()
-                                }
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            containerColor = if (isEnRoute) Color(0xFF4ADE80) else colors.secondary
+                            text = if (isEnRoute) "CONTINUAR RUTA OFICIAL" else "INICIAR PROTOCOLO DE SALIDA",
+                            onClick = onStartInspection,
+                            modifier = Modifier.fillMaxWidth().height(70.dp),
+                            containerColor = if (isEnRoute) Color(0xFF22C55E) else colors.secondary
                         )
                     }
                     
