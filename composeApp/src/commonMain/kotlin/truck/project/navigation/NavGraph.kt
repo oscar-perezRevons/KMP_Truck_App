@@ -176,6 +176,10 @@ fun NavGraph(
                     navController.currentBackStackEntry?.savedStateHandle?.set("destinationToEdit", destination)
                     navController.navigate(Screens.NewRoute.route)
                 },
+                onNavigateToAssignTrip = { tripId ->
+                    navController.currentBackStackEntry?.savedStateHandle?.set("tripIdToAssign", tripId)
+                    navController.navigate(Screens.AssignTrip.route)
+                },
                 onNavigateToProfile = { navController.navigate(Screens.AdminProfile.route) },
                 onNavigateToShowroom = { navController.navigate(Screens.VolvoShowroom.route) },
                 onLogout = { viewModel.onIntent(AdminDashboardIntent.Logout) }

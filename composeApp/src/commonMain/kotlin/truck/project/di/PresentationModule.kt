@@ -9,6 +9,7 @@ import truck.project.features.fleet.presentation.viewmodel.TruckViewModel
 import truck.project.features.admin.presentation.forms.NewTruckViewModel
 import truck.project.features.admin.presentation.forms.NewDriverViewModel
 import truck.project.features.admin.presentation.forms.NewRouteViewModel
+import truck.project.features.admin.presentation.forms.AssignTripViewModel
 import truck.project.features.admin.presentation.profile.AdminProfileViewModel
 import truck.project.features.driver.presentation.trip.DriverTripViewModel
 import truck.project.features.auth.presentation.register.AdminRegisterViewModel
@@ -21,6 +22,7 @@ val presentationModule = module {
     viewModelOf(::NewTruckViewModel)
     viewModelOf(::NewDriverViewModel)
     viewModelOf(::NewRouteViewModel)
+    viewModelOf(::AssignTripViewModel)
     viewModelOf(::DriverTripViewModel)
     viewModelOf(::AdminRegisterViewModel)
     viewModelOf(::AdminProfileViewModel)

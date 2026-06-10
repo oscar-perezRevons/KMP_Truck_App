@@ -7,6 +7,8 @@ import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import truck.project.Platform
+import truck.project.getPlatform
 import truck.project.core.data.remote.RemoteDatabase
 import truck.project.core.data.remote.TranslationService
 import truck.project.features.auth.data.remote.AuthApi
@@ -23,7 +25,7 @@ import truck.project.core.reporting.ReportService
 import truck.project.core.reporting.ReportServiceImpl
 
 val dataModule = module {
-    singleOf(::ReportServiceImpl).bind<ReportService>()
+    single<ReportService> { ReportServiceImpl(get()) }
 
     single {
         HttpClient {

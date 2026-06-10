@@ -12,4 +12,5 @@ actual val platformModule = module {
     single<RemoteDatabase> { AndroidRemoteDatabase() }
     single<ImageStorage> { AndroidImageStorage(get()) }
     single<FileOpener> { AndroidFileOpener(get()) }
+    single<Platform> { AndroidPlatform(get()) }
 }

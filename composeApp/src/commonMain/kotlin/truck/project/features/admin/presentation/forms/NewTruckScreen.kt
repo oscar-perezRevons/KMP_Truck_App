@@ -45,10 +45,6 @@ fun NewTruckScreen(
     val scrollState = rememberScrollState()
     val colors = DsTheme.colors
     
-    val imagePicker = rememberImagePickerLauncher { bytes ->
-        viewModel.onPhotoSelected(bytes)
-    }
-
     LaunchedEffect(state.isSuccess) {
         if (state.isSuccess) onBack()
     }
@@ -153,48 +149,34 @@ fun NewTruckScreen(
                             value = state.capacity, 
                             onValueChange = viewModel::onCapacityChanged, 
                             label = "CAPACIDAD (TN)", 
-                            placeholder = "0.0"
+                            placeholder = "Ej: 25.5"
                         )
 
+                        Spacer(modifier = Modifier.height(24.dp))
+                        
                         Text(
-                            "FOTO DE LA UNIDAD", 
+                            "VISTA PREVIA DE LA UNIDAD", 
                             color = colors.textSecondary, 
                             style = DsTheme.typography.labelSmall, 
                             fontWeight = FontWeight.ExtraBold, 
-                            letterSpacing = 2.sp,
-                            modifier = Modifier.padding(top = 8.dp)
+                            letterSpacing = 2.sp
                         )
 
-                        // Preview of selected image
+                        Spacer(modifier = Modifier.height(12.dp))
+
                         Surface(
-                            modifier = Modifier.fillMaxWidth().height(200.dp).clickable { imagePicker() },
+                            modifier = Modifier.fillMaxWidth().height(200.dp),
                             shape = RoundedCornerShape(24.dp),
                             color = colors.textPrimary.copy(alpha = 0.05f),
-                            border = androidx.compose.foundation.BorderStroke(2.dp, if (state.selectedPhoto != null || state.currentImageUrl != null) colors.primary else colors.textPrimary.copy(alpha = 0.1f))
+                            border = androidx.compose.foundation.BorderStroke(1.dp, colors.textPrimary.copy(alpha = 0.1f))
                         ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                if (state.selectedPhoto != null) {
-                                    AsyncImage(model = state.selectedPhoto, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(24.dp)))
-                                } else if (!state.currentImageUrl.isNullOrBlank()) {
-                                    AsyncImage(model = state.currentImageUrl, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(24.dp)))
-                                } else {
-                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                        Icon(Icons.Default.AddAPhoto, contentDescription = null, tint = colors.primary, modifier = Modifier.size(48.dp))
-                                        Spacer(modifier = Modifier.height(12.dp))
-                                        Text("SELECCIONAR DESDE GALERÍA", color = colors.textSecondary, style = DsTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
-                                    }
-                                }
-                                
-                                if (state.selectedPhoto != null || !state.currentImageUrl.isNullOrBlank()) {
-                                    Surface(
-                                        modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-                                        shape = CircleShape,
-                                        color = colors.secondary
-                                    ) {
-                                        Icon(Icons.Default.Edit, contentDescription = null, tint = Color.Black, modifier = Modifier.padding(8.dp).size(20.dp))
-                                    }
-                                }
-                            }
+                            // Carga directa de la carpeta drawable
+                            Image(
+                                painter = painterResource(Res.drawable.imagen1),
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
                         }
                     }
                 }
