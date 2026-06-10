@@ -12,8 +12,22 @@ import com.google.firebase.messaging.RemoteMessage
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        // Handle Notification message
         remoteMessage.notification?.let {
-            showNotification(it.title ?: "TruckApp", it.body ?: "")
+            showNotification(it.title ?: "TruckFlow", it.body ?: "")
+        }
+
+        // Handle Data message for Real-time Expenses
+        if (remoteMessage.data.isNotEmpty()) {
+            val type = remoteMessage.data["type"]
+            if (type == "NEW_EXPENSE") {
+                val monto = remoteMessage.data["amount"]
+                val chofer = remoteMessage.data["driver"]
+                showNotification(
+                    "Nuevo Gasto Registrado",
+                    "$chofer ha registrado un gasto de $$monto"
+                )
+            }
         }
     }
 

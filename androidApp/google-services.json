@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "625002602437",
+    "firebase_url": "https://truckapp-60cb6-default-rtdb.firebaseio.com",
     "project_id": "truckapp-60cb6",
     "storage_bucket": "truckapp-60cb6.firebasestorage.app"
   },
@@ -8,6 +9,25 @@
     {
       "client_info": {
         "mobilesdk_app_id": "1:625002602437:android:cbf8156ccaab906ffa75ac",
+        "android_client_info": {
+          "package_name": "com.ucb.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6HsceWa2qu-HAPw9BYLbJDem5cC1e4xA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625002602437:android:fbdb07179ea67ba1fa75ac",
         "android_client_info": {
           "package_name": "truck.project"
         }

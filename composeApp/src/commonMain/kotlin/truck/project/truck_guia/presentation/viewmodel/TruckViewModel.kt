@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import truck.project.truck_guia.domain.model.Truck
 import truck.project.truck_guia.domain.usecase.*
+import truck.project.truck_guia.domain.vo.Placa
 import truck.project.truck_guia.presentation.state.TruckState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -49,7 +50,7 @@ class TruckViewModel(
                 if (currentState.editingTruck == null) {
                     saveTruckUseCase(
                         Truck(
-                            licensePlate = currentState.licensePlate,
+                            licensePlate = Placa.create(currentState.licensePlate),
                             model = currentState.model,
                             status = "Activo"
                         )
@@ -57,7 +58,7 @@ class TruckViewModel(
                 } else {
                     updateTruckUseCase(
                         currentState.editingTruck.copy(
-                            licensePlate = currentState.licensePlate,
+                            licensePlate = Placa.create(currentState.licensePlate),
                             model = currentState.model
                         )
                     )
@@ -71,7 +72,7 @@ class TruckViewModel(
         _state.update {
             it.copy(
                 editingTruck = truck,
-                licensePlate = truck.licensePlate,
+                licensePlate = truck.licensePlate.value,
                 model = truck.model
             )
         }

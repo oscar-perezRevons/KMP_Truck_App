@@ -18,7 +18,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import org.koin.android.ext.android.inject
-import truck.project.data.remote.FirebaseConfig
+import truck.project.core.data.remote.FirebaseConfig
 import truck.project.worker.TranslationWorker
 
 class MainActivity : ComponentActivity() {

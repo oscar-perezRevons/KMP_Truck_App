@@ -31,7 +31,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":designsystem"))
+            implementation(projects.designsystem)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
@@ -48,6 +48,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.navigation.compose)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.material.icons.extended)
 
             //ktor
             implementation(libs.ktor.client.core)
@@ -59,6 +60,8 @@ kotlin {
 
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
+
+            implementation(libs.turbine)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -70,9 +73,18 @@ kotlin {
             implementation(libs.firebase.database)
             implementation(libs.firebase.messaging)
             implementation(libs.androidx.work.runtime)
+            implementation(libs.google.maps.compose)
+            implementation(libs.play.services.maps)
+            implementation(libs.play.services.location)
+            implementation(libs.accompanist.permissions)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.turbine)
+        }
+        androidInstrumentedTest.dependencies {
+            implementation(libs.ui.test.junit4)
         }
     }
 }

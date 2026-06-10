@@ -2,7 +2,7 @@ package truck.project
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
-import truck.project.data.remote.FirebaseConfig
+import truck.project.core.data.remote.FirebaseConfig
 
 class AndroidFirebaseConfig : FirebaseConfig {
     private val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
