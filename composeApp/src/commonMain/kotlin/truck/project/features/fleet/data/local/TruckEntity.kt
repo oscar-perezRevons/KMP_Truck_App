@@ -9,6 +9,7 @@ data class TruckEntity(
     val adminId: String = "", // Associated admin/company
     val plateNumber: String = "",
     val model: String = "",
+    val origin: String = "",
     val capacity: Double = 0.0,
     val imageUrl: String? = null,
     val imageUrls: String? = null, // Comma separated URLs

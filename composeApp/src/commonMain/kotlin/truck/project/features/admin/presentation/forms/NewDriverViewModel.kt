@@ -16,9 +16,11 @@ import kotlinx.datetime.Clock
 data class NewDriverState(
     val id: String? = null,
     val name: String = "",
-    val dni: String = "",
-    val license: String = "",
-    val email: String = "",
+    val dniBase: String = "",
+    val dniComplement: String = "",
+    val dniExtension: String = "LP",
+    val licenseType: String = "Profesional B",
+    val emailPrefix: String = "",
     val password: String = "",
     val photoDataList: List<ByteArray> = emptyList(),
     val photoUrls: List<String> = emptyList(),
@@ -37,10 +39,39 @@ class NewDriverViewModel(
     private val _state = MutableStateFlow(NewDriverState())
     val state: StateFlow<NewDriverState> = _state.asStateFlow()
 
+    val availableExtensions = listOf("LP", "SC", "CB", "OR", "PT", "CH", "TJ", "BE", "PD")
+    val availableLicenses = listOf("Profesional B", "Profesional C")
+
+    val extensionNames = mapOf(
+        "LP" to "La Paz",
+        "SC" to "Santa Cruz",
+        "CB" to "Cochabamba",
+        "OR" to "Oruro",
+        "PT" to "Potosí",
+        "CH" to "Chuquisaca",
+        "TJ" to "Tarija",
+        "BE" to "Beni",
+        "PD" to "Pando"
+    )
+
     fun onNameChanged(value: String) = _state.update { it.copy(name = value) }
-    fun onDniChanged(value: String) = _state.update { it.copy(dni = value) }
-    fun onLicenseChanged(value: String) = _state.update { it.copy(license = value) }
-    fun onEmailChanged(value: String) = _state.update { it.copy(email = value) }
+    
+    fun onDniBaseChanged(value: String) {
+        if (value.length <= 8 && value.all { it.isDigit() }) {
+            _state.update { it.copy(dniBase = value) }
+        }
+    }
+
+    fun onDniComplementChanged(value: String) {
+        if (value.length <= 2) {
+            _state.update { it.copy(dniComplement = value.uppercase()) }
+        }
+    }
+
+    fun onDniExtensionChanged(value: String) = _state.update { it.copy(dniExtension = value) }
+    fun onLicenseTypeChanged(value: String) = _state.update { it.copy(licenseType = value) }
+    fun onEmailPrefixChanged(value: String) = _state.update { it.copy(emailPrefix = value) }
+    
     fun onPasswordChanged(value: String) = _state.update { it.copy(password = value) }
     fun onPhotoSelected(data: ByteArray) = _state.update { it.copy(photoDataList = it.photoDataList + data) }
     fun onUrlInputChanged(value: String) = _state.update { it.copy(currentUrlInput = value) }
@@ -52,13 +83,28 @@ class NewDriverViewModel(
     fun onStorageModeChanged(mode: StorageMode) = _state.update { it.copy(storageMode = mode) }
 
     fun setEditDriver(driver: Driver) {
+        // Try to parse DNI back: "base[-complement] extension"
+        // Example: "6755210-1A LP" or "6755210 LP"
+        val dniParts = driver.dni.split(" ")
+        val mainPart = dniParts.getOrNull(0) ?: ""
+        val extension = dniParts.getOrNull(1) ?: "LP"
+        
+        val mainSplit = mainPart.split("-")
+        val base = mainSplit.getOrNull(0) ?: ""
+        val complement = mainSplit.getOrNull(1) ?: ""
+
+        val emailPrefix = driver.email?.substringBefore("@") ?: ""
+
         _state.update { 
             it.copy(
                 id = driver.id,
                 name = driver.name,
-                dni = driver.dni,
-                license = driver.licenseNumber,
-                email = driver.email ?: "",
+                dniBase = base,
+                dniComplement = complement,
+                dniExtension = if (availableExtensions.contains(extension)) extension else "LP",
+                licenseType = if (availableLicenses.contains(driver.licenseNumber)) driver.licenseNumber else "Profesional B",
+                emailPrefix = emailPrefix,
+                password = driver.password ?: "",
                 photoUrls = driver.photoUrls + listOfNotNull(driver.photoUrl),
                 isEditMode = true
             )
@@ -77,20 +123,44 @@ class NewDriverViewModel(
 
     fun saveDriver() {
         val currentState = _state.value
-        if (currentState.name.isBlank() || currentState.email.isBlank()) {
-            _state.update { it.copy(error = "Por favor completa los campos básicos") }
+        
+        // Validations
+        if (currentState.name.isBlank()) {
+            _state.update { it.copy(error = "El nombre es obligatorio") }
+            return
+        }
+        
+        if (currentState.dniBase.length < 4) {
+            _state.update { it.copy(error = "El número base del C.I. debe tener al menos 4 dígitos") }
+            return
+        }
+
+        if (currentState.emailPrefix.isBlank()) {
+            _state.update { it.copy(error = "El correo electrónico es obligatorio") }
             return
         }
 
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
             
+            val fullDni = buildString {
+                append(currentState.dniBase)
+                if (currentState.dniComplement.isNotBlank()) {
+                    append("-")
+                    append(currentState.dniComplement)
+                }
+                append(" ")
+                append(currentState.dniExtension)
+            }
+
+            val fullEmail = "${currentState.emailPrefix}@gmail.com"
+            
             val driver = Driver(
                 id = currentState.id ?: Clock.System.now().toEpochMilliseconds().toString(),
                 name = currentState.name,
-                dni = currentState.dni,
-                licenseNumber = currentState.license,
-                email = currentState.email,
+                dni = fullDni,
+                licenseNumber = currentState.licenseType,
+                email = fullEmail,
                 password = currentState.password.ifBlank { null },
                 photoUrl = currentState.photoUrls.firstOrNull(),
                 photoUrls = currentState.photoUrls
